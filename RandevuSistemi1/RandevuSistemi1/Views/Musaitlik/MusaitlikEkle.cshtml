@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Musaitlik Ekle";
+}
+
+
+
+@using RandevuSistemi1.Models
+
+<div class="row mt">
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <h4 class="mb"><i class="fa fa-angle-right"></i> Müsait vakti Ekleme Sayfası</h4>
+            <form class="form-horizontal style-form" action="/Musaitlik/MusaitlikEkle" method="post" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Tarih</label>
+                    <div class="col-sm-10">
+                        <div class="col-md-3 col-xs-11">
+                            <input class="form-control" type="date" name="Tarih">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Saat</label>
+                    <div class="col-sm-10">
+                        <div class="col-md-3 col-xs-11">
+                            <input type="time" id="appt" name="Saat">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-theme ">Müsaitlik Ekle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

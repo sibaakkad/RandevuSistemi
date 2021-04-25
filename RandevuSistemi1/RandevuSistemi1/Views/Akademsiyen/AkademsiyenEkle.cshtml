@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "Akademsiyen Ekle";
+}
+
+@using RandevuSistemi1.Models
+
+<div class="row mt">
+    <div class="col-lg-12">
+        <div class="form-panel">
+            <h4 class="mb"><i class="fa fa-angle-right"></i> Akademsiyen Ekleme Sayfası</h4>
+            <form class="form-horizontal style-form" action="/Akademsiyen/AkademsiyenEkle" method="post" role="form">
+
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Ad</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Akademisyen adı giriniz" name="Ad">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Soyad</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control " placeholder="Akademisyen soyadı giriniz" name="Soyad">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Eposta</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control " placeholder="Akademisyen Eposta giriniz" name="Eposta">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Fakulte</label>
+                    <div class="col-sm-10">
+                        <select name="FakulteId" class="form-control">
+                            @foreach (Fakulteler item in ViewBag.fakulte)
+                            {
+                                <option value="@item.FakulteId">@item.FakulteAd</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Bolum</label>
+                    <div class="col-sm-10">
+                        <select name="BolumId" class="form-control">
+                            @foreach (Bolumler item in ViewBag.bolum)
+                            {
+                                <option value="@item.BolumId">@item.BolumAd</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-sm-2 control-label">Parola</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" placeholder="Parola giriniz" name="Parola">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-theme ">Akademisyen Ekle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+

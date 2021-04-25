@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using RandevuSistemi1.Models
+@model List<Akademisyenler>
+
+@section head{
+    <style>
+        .hata {
+            color: red;
+        }
+    </style>
+}
+
+@section body{
+    <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">Akademisyen Sil</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="mesaj"></p>
+                    <p class="hata"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger akSil">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="col-md-12 mt">
+    <div class="content-panel">
+        <h4><i class="fa fa-angle-right"></i>Akademisyenler</h4><hr><table class="table table-hover">
+            <a href="/Akademsiyen/AkademsiyenEkle/" class="btn btn-round btn-success "> Yeni Akademisyen Ekle</a>
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>Eposta</th>
+                    <th>Fakulte</th>
+                    <th>Bölüm</th>
+                    <th>Parola</th>
+                    <th>Güncelle</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Akademisyenler item in Model)
+                {
+                    <tr>
+                        <td>@item.Ad</td>
+                        <td>@item.Soyad</td>
+                        <td>@item.Eposta</td>
+
+                        @if (item.Fakulteler == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td> @item.Fakulteler.FakulteAd</td>
+                        }
+
+
+                        @if (item.Bolumler == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td> @item.Bolumler.BolumAd</td>
+                        }
+                        <td>@item.Parola</td>
+                        <td><a href="/Akademsiyen/AkademsiyenGuncelle/@item.AkmId" class="btn btn-primary">Güncelle</a></td>
+                        <td><button class="btn btn-danger modalAc" data-akmid="@item.AkmId" data-akademisyen="@item.Ad" data-toggle="modal" data-target="#myModal">Sil</button></td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/lib/jquery/jquery-1.11.1.min.js"></script>
+    <script>
+        $(".modalAc").click(function () {
+            $(".modal-body>p.hata").html("");
+            var akademisyenAdi = $(this).data("akademisyen");
+            $(".modal-body>p.mesaj").html(akademisyenAdi + " isimli  akademisyen silinsin mi?");
+            var id = $(this).data("akmid");
+            $(".akSil").data("akmid", id);
+        });
+
+        $(".akSil").click(function () {
+            var id = $(this).data("akmid");
+            $.ajax({
+                type: "POST",
+                url: "/Akademsiyen/AkademsiyenSil/" + id,
+                success: function (durum) {
+                    if (durum == "tamam") {
+                        window.location.replace("/Akademsiyen/Index");
+                    }
+                    else {
+                        $(".modal-body>p.hata").html("Hata Oluştu");
+                    }
+                }
+
+            });
+        });
+
+    </script>
+}
+

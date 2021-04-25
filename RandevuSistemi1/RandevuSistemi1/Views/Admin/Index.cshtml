@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@using RandevuSistemi1.Models
+@model List<Adminler>
+
+@section head{
+    <style>
+        .hata {
+            color: red;
+        }
+    </style>
+}
+
+<form class="form-horizontal style-form" action="/Admin/AdminEkle" method="post" role="form">
+    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal2" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Admin Ekle</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Admin Adı</p>
+                    <input type="text" name="KullaniciAdi" placeholder="Admin adı giriniz " autocomplete="off" class="form-control placeholder-no-fix">
+                </div>
+                <div class="modal-body">
+                    <p>Parola</p>
+                    <input type="text" name="Parola" placeholder="Parola giriniz " autocomplete="off" class="form-control placeholder-no-fix">
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">İptal</button>
+                    <button class="btn btn-theme" type="submit">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section body{
+    <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">Admin Sil</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="mesaj"></p>
+                    <p class="hata"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger ASil">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="col-md-12 mt">
+    <div class="content-panel">
+        <h4><i class="fa fa-angle-right"></i>Adminler</h4><hr><table class="table table-hover">
+            <a data-toggle="modal" href="/Content/login.html#myModal2" class="btn btn-round btn-success ">Yeni Admin Ekle</a>
+            <thead>
+                <tr>
+                    <th>Admin</th>
+                    <th>Parola</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Adminler item in Model)
+                {
+                    <tr>
+                        <td>@item.KullaniciAdi</td>
+                        <td>@item.Parola</td>
+                        <td><button class="btn btn-danger modalAc" data-id="@item.adminID" data-admin="@item.KullaniciAdi" data-toggle="modal" data-target="#myModal">Sil</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/lib/jquery/jquery-1.11.1.min.js"></script>
+    <script>
+        $(".modalAc").click(function () {
+            $(".modal-body>p.hata").html("");
+            var adminAdi = $(this).data("admin");
+            $(".modal-body>p.mesaj").html(adminAdi + " isimli  Admin silinsin mi?");
+            var id = $(this).data("id");
+            $(".ASil").data("id", id);
+        });
+
+        $(".ASil").click(function () {
+            var id = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "/Admin/AdminSil/" + id,
+                success: function (durum) {
+                    if (durum == "tamam") {
+                        window.location.replace("/Admin/Index");
+                    }
+                    else {
+                        $(".modal-body>p.hata").html("Hata Oluştu");
+                    }
+                }
+
+            });
+        });
+
+    </script>
+}
+
+
+
+

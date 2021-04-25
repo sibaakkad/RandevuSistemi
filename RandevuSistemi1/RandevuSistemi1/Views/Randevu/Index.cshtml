@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using RandevuSistemi1.Models
+@model List<Randevu>
+
+@section head{
+    <style>
+        .hata {
+            color: red;
+        }
+    </style>
+}
+@section body{
+    <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">Randevu Sil</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="mesaj"></p>
+                    <p class="hata"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger RaSil">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="col-md-12 mt">
+    <div class="content-panel">
+        <h4><i class="fa fa-angle-right"></i>Randevular</h4><hr><table class="table table-hover">
+            @if (User.IsInRole("O"))
+            {
+                <a href="/Randevu/RandevuEkle/" class="btn btn-round btn-success ">Randevu Talep et</a>
+            }
+            <thead>
+                <tr>
+                    @if (User.IsInRole("A"))
+                    {
+                        <th>Öğrenci</th>
+                    }
+                    @if (User.IsInRole("O"))
+                    {
+                        <th>Akademsiyen</th>
+                    }
+                    <th>Tarih</th>
+                    <th>saat</th>
+                    <th>Konu</th>
+                    <th>Durum</th>
+                    @if (User.IsInRole("A"))
+                    {
+                        <th>Onayla</th>
+                    }
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Randevu item in Model)
+                {
+                    <tr>
+
+                        @if (User.IsInRole("A"))
+                        {
+                            if (item.Ogrenciler == null)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>@item.Ogrenciler.Ad  @item.Ogrenciler.Soyad</td>
+                            }
+
+
+                        }  @if (User.IsInRole("O"))
+                        {
+                            if (item.Akademisyenler == null)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>@item.Akademisyenler.Ad  @item.Akademisyenler.Soyad</td>
+                            }
+                        }
+                        <td>@item.Tarih</td>
+
+                        @if (item.Akademisyenler == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td>@item.Saatler.Saat</td>
+                        }
+                        <td>@item.Konu</td>
+
+                        @if (@item.AktifMi == true)
+                        {
+
+                            <td><span class="badge bg-success">Onaylandi</span> </td>
+                        }
+                        else
+                        {
+                            <td><span class="badge bg-warning">Beklemede</span></td>
+                        }
+
+                        @if (User.IsInRole("A"))
+                        {
+
+                            <td><button class="btn btn-success onayla" data-ranido="@item.RandevuId">Onayla</button></td>
+                        }
+                        <td><button class="btn btn-danger modalAc" data-ranid="@item.RandevuId" data-toggle="modal" data-target="#myModal">Sil</button></td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/lib/jquery/jquery-1.11.1.min.js"></script>
+    <script>
+        $(".modalAc").click(function () {
+            $(".modal-body>p.hata").html("");
+            $(".modal-body>p.mesaj").html("Randevu silinsin mi?");
+            var id = $(this).data("ranid");
+            $(".RaSil").data("ranid", id);
+        });
+
+        $(".RaSil").click(function () {
+            var id = $(this).data("ranid");
+            $.ajax({
+                type: "POST",
+                url: "/Randevu/RandevuSil/" + id,
+                success: function (durum) {
+                    if (durum == "tamam") {
+                        window.location.replace("/Randevu/Index");
+                    }
+                    else {
+                        $(".modal-body>p.hata").html("Hata Oluştu");
+                    }
+                }
+
+            });
+        });
+
+        $(".onayla").click(function () {
+            var id = $(this).data("ranido");
+            $.ajax({
+                type: "POST",
+                url: "/Randevu/RandevuOnayla/" + id,
+                success: function (durum) {
+                    if (durum == "tamam") {
+                        window.location.replace("/Randevu/Index");
+                    }
+                }
+            });
+        });
+
+    </script>
+}
